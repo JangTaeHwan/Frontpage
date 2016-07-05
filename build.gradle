@@ -1,0 +1,99 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'war'
+
+ext.springVersion = '4.1.4.RELEASE'
+ext.tilesVersion = '2.2.2'
+
+compileJava.options.encoding = 'UTF-8'
+sourceCompatibility = 1.8
+version = '1.0'
+
+allprojects {
+   apply plugin: 'eclipse-wtp'
+}
+
+eclipse{
+   project.natures "org.springsource.ide.eclipse.gradle.core.nature"
+   wtp{
+      facet{
+         facet name: 'jst.web', version: '3.0'
+         facet name: 'jst.java', version: '1.8'
+      }
+   }
+}
+
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Quickstart', 'Implementation-Version': version
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+   providedCompile 'javax.servlet:javax.servlet-api:3.0.1'
+   
+   providedRuntime 'org.slf4j:slf4j-simple:1.7.2';
+   
+   compile 'jstl:jstl:1.2'
+   
+   compile "org.springframework:spring-orm:$springVersion"
+   compile "org.springframework:spring-aop:$springVersion"
+   compile "org.springframework:spring-webmvc:$springVersion"
+   compile "org.springframework:spring-oxm:$springVersion"
+   compile "org.springframework:spring-aspects:$springVersion"
+   
+   compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
+   
+   compile 'org.slf4j:slf4j-api:1.7.2'
+   compile 'org.slf4j:jcl-over-slf4j:1.7.2'
+   
+   compile "org.apache.tiles:tiles-servlet:$tilesVersion"
+   compile "org.apache.tiles:tiles-jsp:$tilesVersion"
+   compile "org.apache.tiles:tiles-api:$tilesVersion"
+   compile "org.apache.tiles:tiles-core:$tilesVersion"
+   
+
+   compile ("org.apache.hbase:hbase-client:0.96.1-hadoop2") {
+      exclude group: "tomcat", module: "jasper-runtime"
+      exclude group: "tomcat", module: "jasper-compiler"
+      exclude group: "net.java.dev.jets3t", module: "jets3t"
+      exclude group: 'org.mortbay.jetty', module: 'jsp-2.1'
+      exclude group: 'org.mortbay.jetty', module: 'servlet-api'
+      exclude group: 'org.mortbay.jetty', module: 'jsp-api-2.1'
+      exclude group: 'org.mortbay.jetty', module: 'servlet-api-2.5'
+      exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+   }
+
+   compile ("org.apache.hadoop:hadoop-client:2.2.0"){
+      exclude group: "tomcat", module: "jasper-runtime"
+      exclude group: "tomcat", module: "jasper-compiler"
+      exclude group: "net.java.dev.jets3t", module: "jets3t"
+      exclude group: 'org.mortbay.jetty', module: 'jsp-2.1'
+      exclude group: 'org.mortbay.jetty', module: 'servlet-api'
+      exclude group: 'org.mortbay.jetty', module: 'jsp-api-2.1'
+      exclude group: 'org.mortbay.jetty', module: 'servlet-api-2.5'
+      exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+   }
+   
+   compile fileTree(dir: "/home/ahn/workspace/Cluster/lib", include: "*.jar")
+
+
+   testCompile group: 'junit', name: 'junit', version: '4.+'
+   testCompile 'org.springframework:spring-test:3.2.3.RELEASE'
+}
+
+test {
+    systemProperties 'property': 'value'
+}
+
+uploadArchives {
+    repositories {
+       flatDir {
+           dirs 'repos'
+       }
+    }
+}
